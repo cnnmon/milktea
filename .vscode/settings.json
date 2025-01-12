@@ -8,7 +8,6 @@
     "package.json",
     "postcss.config.mjs",
     "next-env.d.ts",
-    "middleware.ts",
     "eslint.config.mjs"
   ],
   "files.exclude": {
@@ -26,7 +25,6 @@
     "package.json": true,
     "postcss.config.mjs": true,
     "next-env.d.ts": true,
-    "middleware.ts": true,
     "eslint.config.mjs": true
   }
 }

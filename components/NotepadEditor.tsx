@@ -3,7 +3,7 @@
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { DotsVerticalIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Doc, Id } from "@/convex/_generated/dataModel";
@@ -27,13 +27,27 @@ export default function NotepadEditor({
   const createNotepad = useMutation(api.notepads.create);
   const updateNotepad = useMutation(api.notepads.update);
 
+  const lastSavedTitle = useRef(notepad?.title || "");
+  const lastSavedContent = useRef(notepad?.content || "");
+
   useEffect(() => {
     setTitle(notepad?.title || "");
     setContent(notepad?.content || "");
+    setCreatedId(notepad?._id || null);
+    lastSavedTitle.current = notepad?.title || "";
+    lastSavedContent.current = notepad?.content || "";
   }, [notepad]);
 
   const handleUpdate = async (newTitle: string, newContent: string) => {
     if (!newTitle.trim() && !newContent.trim()) {
+      return;
+    }
+
+    const titleChanged = newTitle.trim() !== lastSavedTitle.current.trim();
+    const contentChanged =
+      newContent.trim() !== lastSavedContent.current.trim();
+
+    if (!titleChanged && !contentChanged) {
       return;
     }
 
@@ -51,6 +65,9 @@ export default function NotepadEditor({
         content: newContent,
       });
     }
+
+    lastSavedTitle.current = newTitle;
+    lastSavedContent.current = newContent;
   };
 
   const handleContentChange = (e: React.FocusEvent<HTMLDivElement>) => {
@@ -95,7 +112,12 @@ export default function NotepadEditor({
     <>
       <Header
         left={
-          <Button onClick={() => router.back()}>
+          <Button
+            onClick={async () => {
+              await handleUpdate(title, content);
+              router.push("/notepad");
+            }}
+          >
             <ArrowLeftIcon className="w-6 h-6" />
           </Button>
         }
@@ -106,7 +128,7 @@ export default function NotepadEditor({
         }
       />
 
-      <div className="flex flex-col gap-4 overflow-y-auto pb-10 overflow-x-hidden">
+      <div className="flex flex-col gap-4 overflow-y-scroll pb-10 overflow-x-hidden">
         <div className="pt-[50%]">
           <input
             className="big font-secondary font-bold bg-transparent h-10 focus:outline-none"

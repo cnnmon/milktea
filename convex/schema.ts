@@ -10,7 +10,7 @@ export default defineSchema({
     title: v.string(),
     content: v.string(),
     tags: v.array(v.string()),
-    userId: v.id("users"),
+    userId: v.string(),
     createdAt: v.number(),
   }).index("by_user", ["userId"]),
 });

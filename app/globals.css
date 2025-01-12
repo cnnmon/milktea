@@ -65,3 +65,7 @@ a:hover {
 .border {
   border: 1.5px solid var(--dark);
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
