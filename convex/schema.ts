@@ -6,25 +6,11 @@ import { v } from "convex/values";
 // requires indexes defined on `authTables`.
 export default defineSchema({
   ...authTables,
-  messages: defineTable({
-    userId: v.id("users"),
-    body: v.string(),
-  }),
-  routines: defineTable({
-    title: v.string(),
-    tracker: v.optional(
-      v.array(
-        v.object({
-          line: v.string(),
-          notepadId: v.string(),
-        })
-      )
-    ),
-    type: v.string(),
-  }),
   notepads: defineTable({
     title: v.string(),
     content: v.string(),
     tags: v.array(v.string()),
-  }),
+    userId: v.id("users"),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
 });
