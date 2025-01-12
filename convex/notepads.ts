@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const get = query({
   handler: async (ctx) => {
@@ -32,12 +31,9 @@ export const update = mutation({
 export const create = mutation({
   args: { title: v.string(), content: v.string(), tags: v.array(v.string()) },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) return null;
     return await ctx.db.insert("notepads", {
       ...args,
-      userId,
-      createdAt: Date.now(),
+      date: new Date().toISOString(),
     });
   },
 });
