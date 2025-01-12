@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "neuebit";
+  src: url("/neuebit.otf");
+}
+
+@font-face {
+  font-family: "mondwest";
+  src: url("/mondwest.otf");
+}
+
+@font-face {
+  font-family: "cygnito";
+  src: url("/cygnito.otf");
+}
+
+@layer base {
+  :root {
+    --background: #EFEFEF;
+    --foreground: 20 14.3% 4.1%;
+    --dark: #232323;
+    --primary: #9b9b9b;
+    --primary-foreground: #000000;
+  }
+}
+
+html {
+  background-color: var(--background);
+  font-family: "mondwest";
+}
+
+.font-secondary {
+  font-family: "neuebit";
+  margin-top: 2px;
+}
+
+.tiny {
+  font-size: 16px;
+}
+
+.medium {
+  font-size: 24px;
+}
+
+.big {
+  font-size: 48px;
+}
+
+body {
+  line-height: 1;
+}
+
+a {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+a:hover {
+  background-color: var(--primary);
+}
+
+.border {
+  border: 1.5px solid var(--dark);
+}

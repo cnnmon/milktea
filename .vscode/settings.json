@@ -1,0 +1,32 @@
+{
+  "hide-files.files": [
+    "node_modules",
+    ".next",
+    ".vscode",
+    "setup.mjs",
+    "package-lock.json",
+    "package.json",
+    "postcss.config.mjs",
+    "next-env.d.ts",
+    "middleware.ts",
+    "eslint.config.mjs"
+  ],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "node_modules": true,
+    ".next": true,
+    ".vscode": true,
+    "setup.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "postcss.config.mjs": true,
+    "next-env.d.ts": true,
+    "middleware.ts": true,
+    "eslint.config.mjs": true
+  }
+}
