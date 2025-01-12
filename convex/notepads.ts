@@ -13,6 +13,9 @@ export const get = query({
 export const getById = query({
   args: { notepadId: v.id("notepads") },
   handler: async (ctx, args) => {
+    if (!args.notepadId) {
+      return null;
+    }
     const notepad = await ctx.db.get(args.notepadId);
     return notepad;
   },

@@ -1,6 +1,5 @@
 "use client";
 
-import { useConvexAuth } from "convex/react";
 import { ReactNode } from "react";
 
 export default function SharedLayout({ children }: { children: ReactNode }) {

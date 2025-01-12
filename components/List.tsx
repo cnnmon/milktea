@@ -22,7 +22,7 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
 
   return (
     <>
-      {notepads.map(({ _id, title, createdAt }) => (
+      {notepads.map(({ _id, title, date }) => (
         <div
           key={_id}
           className="flex gap-2 justify-between items-center hover:bg-gray-300 cursor-pointer"
@@ -44,7 +44,10 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
           </div>
           */}
           <p className="small w-1/5 text-right text-gray-500">
-            {new Date(1704528000).toLocaleDateString()}
+            {new Date(date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })}
           </p>
         </div>
       ))}

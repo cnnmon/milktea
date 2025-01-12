@@ -29,6 +29,6 @@ with open("backfill/data.txt", "r") as file:
         content = content.replace("\n", "\\n\\n")
         content = content.replace('"', '\\"')
         title = title.strip().replace('"', '\\"')
-        result += f'{{"title": "{title}", "content": "{content}", "tags": [], "date": "{date.strip()}"}}\n'
+        result += f'{{"title": "{title}", "content": "{content}", "tags": [], "date": "{date.strip()} 2024"}}\n'
     
     print(result.rstrip())
