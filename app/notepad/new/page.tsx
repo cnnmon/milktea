@@ -1,6 +1,6 @@
 "use client";
 
-import NotepadEditor from "@/components/NotepadEditor";
+import NotepadEditor from "../NotepadEditor";
 
 export default function NewNotepadPage() {
   return <NotepadEditor isNew />;

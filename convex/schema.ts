@@ -10,6 +10,9 @@ export default defineSchema({
     title: v.string(),
     content: v.string(),
     tags: v.array(v.string()),
-    date: v.string()
+    date: v.string(),
+    userId: v.optional(v.id("users")),
   })
+    .searchIndex("search_notepads", { searchField: "title" })
+    .index("by_user", ["userId"]),
 });

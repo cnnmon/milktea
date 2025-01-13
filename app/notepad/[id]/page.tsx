@@ -1,6 +1,6 @@
 "use client";
 
-import NotepadEditor from "@/components/NotepadEditor";
+import NotepadEditor from "../NotepadEditor";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
