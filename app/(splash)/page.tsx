@@ -17,17 +17,17 @@ export default function SignInPage() {
   const { signIn } = useAuthActions();
   const { toast } = useToast();
 
-  const handleGitHubSignIn = () => signIn("github");
+  const handleGitHubSignIn = () => signIn("github", { redirectTo: "/notepad" });
 
   const handleMagicLinkSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-
+    formData.set("redirectTo", "/notepad");
     try {
       await signIn("resend", formData);
-      toast({ title: "sign-in link sent! check ur email" });
+      toast({ title: "sign-in link sent! check your email" });
     } catch (error) {
       console.error(error);
       toast({
@@ -39,7 +39,7 @@ export default function SignInPage() {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen text-left big">
-      <div className="flex flex-col w-full max-w-md gap-8">
+      <div className="flex flex-col w-full max-w-lg gap-8">
         <div className="flex flex-col gap-2 p-4">
           <p className="flex gap-1 items-center">
             sign in <FaceIcon className="w-6 h-6" />{" "}
@@ -58,21 +58,17 @@ export default function SignInPage() {
             magic sign-on link <TransparencyGridIcon className="mx-1 w-6 h-6" />
           </div>
 
-          <form
-            className="flex items-center gap-4 mt-4"
-            onSubmit={handleMagicLinkSubmit}
-          >
+          <form onSubmit={handleMagicLinkSubmit}>
             <Input
               name="email"
               id="email"
               placeholder="email@email.email"
               autoComplete="email"
             />
+            <Button type="submit">
+              [send <EnvelopeClosedIcon className="ml-1 w-6 h-6" />]
+            </Button>
           </form>
-
-          <Button type="submit">
-            [send <EnvelopeClosedIcon className="ml-1 w-6 h-6" />]
-          </Button>
         </div>
       </div>
       <Toaster />

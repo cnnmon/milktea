@@ -80,3 +80,17 @@ export const deleteNotepad = mutation({
     return await ctx.db.delete(args.notepadId);
   },
 });
+
+export const updateTags = mutation({
+  args: { notepadId: v.id("notepads"), tags: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Unauthenticated");
+    }
+    
+    await ctx.db.patch(args.notepadId, {
+      tags: args.tags,
+    });
+  },
+});

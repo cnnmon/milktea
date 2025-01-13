@@ -22,6 +22,7 @@ export default function RootLayout({
       // and is needed by `ThemeProvider` which sets the theme
       // class attribute on it */}
       <html lang="en" suppressHydrationWarning>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <body className="antialiased">
           <ThemeProvider attribute="class">{children}</ThemeProvider>
         </body>

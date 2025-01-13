@@ -22,33 +22,35 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
 
   return (
     <>
-      {notepads.map(({ _id, title, date }) => (
+      {notepads.map(({ _id, title, date, tags }) => (
         <div
           key={_id}
           className="flex gap-2 justify-between items-center hover:bg-gray-300 cursor-pointer"
           onClick={() => onClick?.(_id)}
         >
-          <p className="medium flex-grow w-1/2">{title}</p>
-          {/*
-          <div className="flex w-1/4 gap-2 items-center justify-end">
-            {tags.slice(0, 2).map((tag) => (
-              <span key={tag} className="bg-gray-300 px-1">
-                {tag}
-              </span>
-            ))}
-            {tags.length > 2 && (
-              <span className="bg-gray-300 px-1" title={tags.join(", ")}>
-                ...
-              </span>
-            )}
+          <p className="medium w-1/2">{title}</p>
+          <div className="flex w-[20%] gap-2 items-center justify-end">
+            {tags.length ? (
+              <div className="flex gap-2">
+                {tags.slice(0, 2).map((tag) => (
+                  <span key={tag} className="bg-gray-300 px-1">
+                    {tag}
+                  </span>
+                ))}
+                {tags.length > 2 && (
+                  <span className="bg-gray-300 px-1" title={tags.join(", ")}>
+                    ...
+                  </span>
+                )}
+              </div>
+            ) : null}
+            <p className="small text-right text-gray-500">
+              {new Date(date).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
           </div>
-          */}
-          <p className="small w-1/5 text-right text-gray-500">
-            {new Date(date).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
-          </p>
         </div>
       ))}
     </>

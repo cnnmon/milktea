@@ -63,6 +63,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         rows={1}
         ref={autoSize ? textAreaRef : ref}
         value={value}
+        spellCheck={false}
         {...props}
       />
     );
@@ -70,7 +71,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 );
 Textarea.displayName = "Textarea";
 
-export default function Input({
+export default function EditorInput({
   value,
   ref,
   updateValue,

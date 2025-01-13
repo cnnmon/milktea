@@ -1,7 +1,7 @@
 "use client";
 
 import { Header } from "@/components/Header";
-import { List } from "@/components/List";
+import { List } from "./List";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,8 +27,8 @@ export default function NotepadPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem onClick={() => router.push("/toys")}>
-                toys
+              <DropdownMenuItem onClick={() => router.push("/magnets")}>
+                magnets
               </DropdownMenuItem>
               <DropdownMenuItem onClick={signOut}>sign out</DropdownMenuItem>
             </DropdownMenuContent>
@@ -40,7 +40,7 @@ export default function NotepadPage() {
           </Button>
         }
       />
-      <div className="flex flex-col gap-2 pt-[50%] pb-10">
+      <div className="flex flex-col gap-2 pt-[60%] pb-10">
         <List onClick={(id) => router.push(`/notepad/${id}`)} />
       </div>
     </>
