@@ -28,7 +28,7 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
           className="flex gap-2 justify-between items-center hover:bg-gray-300 cursor-pointer"
           onClick={() => onClick?.(_id)}
         >
-          <p className="medium w-1/2">{title}</p>
+          <p className="medium w-[80%]">{title}</p>
           <div className="flex w-[20%] gap-2 items-center justify-end">
             {tags.length ? (
               <div className="flex gap-2">
