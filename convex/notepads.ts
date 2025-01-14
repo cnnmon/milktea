@@ -5,10 +5,7 @@ import { DataModel } from "./_generated/dataModel";
 
 async function getUserEmailBang(ctx: GenericQueryCtx<DataModel>) {
   const identity = await ctx.auth.getUserIdentity();
-  if (identity === null) {
-    throw new Error("Not authenticated");
-  }
-  return identity.email;
+  return identity?.email;
 }
 
 function gracefulRedirect() {

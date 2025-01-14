@@ -95,7 +95,8 @@ export default function Editor({
     if (notepad) {
       setId(notepad._id);
     }
-  }, [notepad]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

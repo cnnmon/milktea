@@ -9,18 +9,19 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: "cover",
-  },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "milktea",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -35,7 +36,6 @@ export default function RootLayout({
       <ConvexClientProvider>
         <html lang="en" suppressHydrationWarning>
           <link rel="icon" href="/favicon.ico" sizes="any" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
           <body className="antialiased">{children}</body>
         </html>
       </ConvexClientProvider>

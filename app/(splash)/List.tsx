@@ -22,14 +22,19 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
 
   return (
     <>
+      {notepads.length === 0 && (
+        <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
+          <p className="tiny text-gray-500">no notepads</p>
+        </div>
+      )}
       {notepads.map(({ _id, title, date, tags }) => (
         <div
           key={_id}
           className="flex gap-2 justify-between items-center hover:bg-gray-300 cursor-pointer"
           onClick={() => onClick?.(_id)}
         >
-          <p className="medium w-[80%]">{title}</p>
-          <div className="flex w-[20%] gap-2 items-center justify-end">
+          <p className="medium w-[85%]">{title}</p>
+          <div className="flex w-[15%] gap-2 items-center justify-end">
             {tags.length ? (
               <div className="flex gap-2">
                 {tags.slice(0, 2).map((tag) => (
