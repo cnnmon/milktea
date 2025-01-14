@@ -10,5 +10,7 @@ export default defineSchema({
     tags: v.array(v.string()),
     date: v.string(),
     email: v.optional(v.string()),
-  }).index("by_user", ["email"]),
+  })
+    .index("by_date", ["date"])
+    .index("by_email_date", ["email", "date"]),
 });
