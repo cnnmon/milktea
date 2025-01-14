@@ -35,6 +35,11 @@ export default function RootLayout({
     >
       <ConvexClientProvider>
         <html lang="en" suppressHydrationWarning>
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+          />
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <body className="antialiased">{children}</body>
         </html>
