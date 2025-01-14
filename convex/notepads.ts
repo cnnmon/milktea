@@ -20,7 +20,7 @@ export const get = query({
     const email = await getUserEmailBang(ctx);
     return await ctx.db
       .query("notepads")
-      .withIndex("by_email_date", (q) => q.eq("email", email))
+      .withIndex("by_user", (q) => q.eq("email", email))
       .order("desc")
       .collect();
   },
