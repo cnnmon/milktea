@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+import ConvexClientProvider from "@/components/ConvexClientProvider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "milktea",
@@ -28,12 +29,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ConvexAuthNextjsServerProvider>
-      <html lang="en" suppressHydrationWarning>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <body className="antialiased">{children}</body>
-      </html>
-    </ConvexAuthNextjsServerProvider>
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+    >
+      <ConvexClientProvider>
+        <html lang="en" suppressHydrationWarning>
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <body className="antialiased">{children}</body>
+        </html>
+      </ConvexClientProvider>
+    </ClerkProvider>
   );
 }

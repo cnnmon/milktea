@@ -1,6 +1,15 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { GenericQueryCtx } from "convex/server";
+import { DataModel } from "./_generated/dataModel";
+
+async function getUserEmailBang(ctx: GenericQueryCtx<DataModel>) {
+  const identity = await ctx.auth.getUserIdentity();
+  if (identity === null) {
+    throw new Error("Not authenticated");
+  }
+  return identity.email;
+}
 
 function gracefulRedirect() {
   if (typeof window !== "undefined") {
@@ -11,13 +20,10 @@ function gracefulRedirect() {
 
 export const get = query({
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    if (userId === null) {
-      return gracefulRedirect();
-    }
+    const email = await getUserEmailBang(ctx);
     return await ctx.db
       .query("notepads")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("email", email))
       .order("desc")
       .collect();
   },
@@ -29,12 +35,9 @@ export const getById = query({
     if (!args.notepadId) {
       return gracefulRedirect();
     }
-    const userId = await getAuthUserId(ctx);
-    if (userId === null) {
-      return gracefulRedirect();
-    }
+    const email = await getUserEmailBang(ctx);
     const notepad = await ctx.db.get(args.notepadId);
-    if (notepad?.userId !== userId) {
+    if (notepad?.email !== email) {
       return gracefulRedirect();
     }
     return notepad;
@@ -62,14 +65,11 @@ export const updateContent = mutation({
 export const create = mutation({
   args: { title: v.string(), content: v.string(), tags: v.array(v.string()) },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (userId === null) {
-      return gracefulRedirect();
-    }
+    const email = await getUserEmailBang(ctx);
     return await ctx.db.insert("notepads", {
       ...args,
       date: new Date().toISOString(),
-      userId: userId,
+      email: email,
     });
   },
 });
@@ -84,11 +84,6 @@ export const deleteNotepad = mutation({
 export const updateTags = mutation({
   args: { notepadId: v.id("notepads"), tags: v.array(v.string()) },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Unauthenticated");
-    }
-    
     await ctx.db.patch(args.notepadId, {
       tags: args.tags,
     });

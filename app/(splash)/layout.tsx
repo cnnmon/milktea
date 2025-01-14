@@ -1,12 +1,11 @@
 import ConvexClientProvider from "@/components/ConvexClientProvider";
+import SharedLayout from "@/components/SharedLayout";
 import { ReactNode } from "react";
 
-export default function SignInLayout({ children }: { children: ReactNode }) {
+export default async function Layout({ children }: { children: ReactNode }) {
   return (
     <ConvexClientProvider>
-      <div className="flex justify-center items-center">
-        <main className="flex grow flex-col">{children}</main>
-      </div>
+      <SharedLayout>{children}</SharedLayout>
     </ConvexClientProvider>
   );
 }

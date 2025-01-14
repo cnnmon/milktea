@@ -105,7 +105,7 @@ export default function Editor({
           if (saveTimeoutRef.current) {
             clearTimeout(saveTimeoutRef.current);
           }
-          window.location.href = "/notepad";
+          window.location.href = "/";
         }}
         onDelete={() => {
           if (saveTimeoutRef.current) {
@@ -114,7 +114,7 @@ export default function Editor({
           if (id) {
             deleteNotepad({ notepadId: id as Id<"notepads"> });
           }
-          window.location.href = "/notepad";
+          window.location.href = "/";
         }}
         isSaving={isSaving}
       />

@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: process.env.CONVEX_SITE_URL,
+      domain: "https://boss-mako-15.clerk.accounts.dev/",
       applicationID: "convex",
     },
   ],
