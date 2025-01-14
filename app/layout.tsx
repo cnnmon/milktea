@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 
 export const metadata: Metadata = {
-  title: "yippee",
-  description: "yippee",
+  title: "milkt",
+  description: "journaling by cabbage",
   icons: {
-    icon: "/yippee.svg",
+    icon: "/favicon.ico",
   },
 };
 
@@ -18,14 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <ConvexAuthNextjsServerProvider>
-      {/* `suppressHydrationWarning` only affects the html tag,
-      // and is needed by `ThemeProvider` which sets the theme
-      // class attribute on it */}
       <html lang="en" suppressHydrationWarning>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <body className="antialiased">
-          <ThemeProvider attribute="class">{children}</ThemeProvider>
-        </body>
+        <body className="antialiased">{children}</body>
       </html>
     </ConvexAuthNextjsServerProvider>
   );
