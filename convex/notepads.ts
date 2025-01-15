@@ -60,7 +60,7 @@ export const updateContent = mutation({
 });
 
 export const create = mutation({
-  args: { title: v.string(), content: v.string(), tags: v.array(v.string()) },
+  args: { title: v.string(), content: v.string() },
   handler: async (ctx, args) => {
     const email = await getUserEmailBang(ctx);
     return await ctx.db.insert("notepads", {
@@ -75,14 +75,5 @@ export const deleteNotepad = mutation({
   args: { notepadId: v.id("notepads") },
   handler: async (ctx, args) => {
     return await ctx.db.delete(args.notepadId);
-  },
-});
-
-export const updateTags = mutation({
-  args: { notepadId: v.id("notepads"), tags: v.array(v.string()) },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.notepadId, {
-      tags: args.tags,
-    });
   },
 });

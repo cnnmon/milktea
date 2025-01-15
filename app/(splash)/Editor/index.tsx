@@ -23,34 +23,22 @@ export default function Editor({
   const [isSaving, setIsSaving] = useState(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const create = useCallback(
-    async (newTitle?: string, newContent?: string, newTags?: string[]) => {
-      setIsSaving(true);
-      try {
-        const createdId = await createNotepad({
-          title: newTitle || notepad?.title || "Untitled",
-          content: newContent || notepad?.content || "",
-          tags: newTags || notepad?.tags || [],
-        });
-        setId(createdId);
-      } finally {
-        if (saveTimeoutRef.current) {
-          clearTimeout(saveTimeoutRef.current);
-        }
-        saveTimeoutRef.current = setTimeout(() => {
-          setIsSaving(false);
-        }, 1000);
-      }
-    },
-    [notepad, createNotepad],
-  );
+  useEffect(() => {
+    if (notepad) {
+      setId(notepad._id);
+    }
+  }, [notepad]);
 
   const handleTitleUpdate = useCallback(
     async (newTitle: string) => {
       setIsSaving(true);
       try {
         if (!id) {
-          return await create(newTitle, undefined, undefined);
+          await createNotepad({
+            title: newTitle,
+            content: "",
+          });
+          return;
         }
         await updateTitle({
           notepadId: id as Id<"notepads">,
@@ -65,7 +53,7 @@ export default function Editor({
         }, 1000);
       }
     },
-    [id, updateTitle, create],
+    [id, updateTitle, createNotepad],
   );
 
   const handleContentUpdate = useCallback(
@@ -73,7 +61,12 @@ export default function Editor({
       setIsSaving(true);
       try {
         if (!id) {
-          return await create(undefined, newContent, undefined);
+          const createdId = await createNotepad({
+            title: "Untitled",
+            content: newContent,
+          });
+          setId(createdId);
+          return;
         }
         await updateContent({
           notepadId: id as Id<"notepads">,
@@ -88,7 +81,7 @@ export default function Editor({
         }, 1000);
       }
     },
-    [id, updateContent, create],
+    [id, updateContent, createNotepad],
   );
 
   useEffect(() => {
@@ -101,7 +94,6 @@ export default function Editor({
   return (
     <>
       <EditorHeader
-        notepad={notepad}
         onExit={() => {
           if (saveTimeoutRef.current) {
             clearTimeout(saveTimeoutRef.current);
@@ -112,6 +104,7 @@ export default function Editor({
           if (saveTimeoutRef.current) {
             clearTimeout(saveTimeoutRef.current);
           }
+          console.log("deleting notepad", id);
           if (id) {
             deleteNotepad({ notepadId: id as Id<"notepads"> });
           }

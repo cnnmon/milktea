@@ -7,7 +7,6 @@ export default defineSchema({
   notepads: defineTable({
     title: v.string(),
     content: v.string(),
-    tags: v.array(v.string()),
     date: v.string(),
     email: v.optional(v.string()),
   }).index("by_user", ["email"])
