@@ -52,7 +52,7 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
     <div className="flex flex-col gap-2">
       {notepads.length === 0 && (
         <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
-          <p className="tiny text-gray-500">no notepads</p>
+          <p className="tiny text-gray-500">no notepads yet...</p>
         </div>
       )}
       {notepads.map(({ _id, title, date }) => (
