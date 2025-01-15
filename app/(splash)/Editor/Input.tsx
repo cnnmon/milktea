@@ -78,6 +78,7 @@ export default function EditorInput({
   className,
   placeholder,
   setIsSaving,
+  autoSize = true,
   debounceTime = 1000,
 }: {
   value: string;
@@ -86,6 +87,7 @@ export default function EditorInput({
   className?: string;
   placeholder?: string;
   setIsSaving?: (isSaving: boolean) => void;
+  autoSize?: boolean;
   debounceTime?: number;
 }) {
   const [localValue, setLocalValue] = useState(value);
@@ -119,7 +121,7 @@ export default function EditorInput({
         setLocalValue(e.target.value);
         setIsSaving?.(true);
       }}
-      autoSize
+      autoSize={autoSize}
       className={className}
       placeholder={placeholder}
     />

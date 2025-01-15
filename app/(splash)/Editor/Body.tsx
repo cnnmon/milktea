@@ -45,6 +45,7 @@ export function Body({
           className="big font-secondary"
           updateValue={handleTitleUpdate}
           setIsSaving={setIsSaving}
+          autoSize={false}
         />
         <div className="flex justify-between gap-2 items-center">
           <p className="text-gray-500">{displayDate}</p>

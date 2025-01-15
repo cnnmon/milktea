@@ -72,7 +72,13 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
             onClick={() => swipeState.x === 0 && onClick?.(_id)}
           >
             <p className="medium flex-1">{title}</p>
-            <p className="small text-right text-gray-500 pr-2">{date}</p>
+            <p className="small text-right text-gray-500 pr-2">
+              {new Date(date).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                timeZone: "UTC",
+              })}
+            </p>
           </div>
           {swipeState.id === _id && swipeState.x > 0 && (
             <div

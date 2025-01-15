@@ -9,5 +9,7 @@ export default function NewNotepadPage() {
     date: new Date().toISOString().split("T")[0],
   });
 
+  console.log(new Date().toISOString().split("T")[0], activeNotepad);
+
   return <NotepadEditor notepad={activeNotepad} />;
 }
