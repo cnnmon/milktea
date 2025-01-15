@@ -3,24 +3,29 @@ import { mutation, query } from "./_generated/server";
 import { GenericQueryCtx } from "convex/server";
 import { DataModel } from "./_generated/dataModel";
 
-async function getUserEmailBang(ctx: GenericQueryCtx<DataModel>) {
+async function getUserEmail(ctx: GenericQueryCtx<DataModel>) {
   const identity = await ctx.auth.getUserIdentity();
-  return identity?.email;
+  if (!identity) return null;
+  return identity.email;
 }
 
 function gracefulRedirect() {
   if (typeof window !== "undefined") {
-    window.location.href = "/";
+    window.location.href = "/sign-in";
   }
   return;
 }
 
 export const get = query({
   handler: async (ctx) => {
-    const email = await getUserEmailBang(ctx);
+    const email = await getUserEmail(ctx);
+    if (!email) {
+      return gracefulRedirect();
+    }
     return await ctx.db
       .query("notepads")
-      .withIndex("by_user", (q) => q.eq("email", email))
+      .withIndex("by_date")
+      .filter((q) => q.eq(q.field("email"), email))
       .order("desc")
       .collect();
   },
@@ -32,7 +37,10 @@ export const getById = query({
     if (!args.notepadId) {
       return gracefulRedirect();
     }
-    const email = await getUserEmailBang(ctx);
+    const email = await getUserEmail(ctx);
+    if (!email) {
+      return gracefulRedirect();
+    }
     const notepad = await ctx.db.get(args.notepadId);
     if (notepad?.email !== email) {
       return gracefulRedirect();
@@ -43,7 +51,11 @@ export const getById = query({
 
 export const updateTitle = mutation({
   args: { notepadId: v.id("notepads"), title: v.string() },
-  handler: async (ctx, args) => {
+    handler: async (ctx, args) => {
+    const email = await getUserEmail(ctx);
+    if (!email) {
+      return null;
+    }
     return await ctx.db.patch(args.notepadId, {
       title: args.title,
     });
@@ -59,13 +71,16 @@ export const updateContent = mutation({
   },
 });
 
-export const create = mutation({
+export const createNotepad = mutation({
   args: { title: v.string(), content: v.string() },
   handler: async (ctx, args) => {
-    const email = await getUserEmailBang(ctx);
+    const email = await getUserEmail(ctx);
+    if (!email) {
+      return null;
+    }
     return await ctx.db.insert("notepads", {
       ...args,
-      date: new Date().toISOString(),
+      date: new Date().toISOString().split("T")[0],
       email: email,
     });
   },
@@ -77,3 +92,36 @@ export const deleteNotepad = mutation({
     return await ctx.db.delete(args.notepadId);
   },
 });
+
+export const getByDate = query({
+  args: { date: v.string() },
+  handler: async (ctx, args) => {
+    const email = await getUserEmail(ctx);
+    if (!email) return null;
+
+    const results = await ctx.db
+      .query("notepads")
+      .withIndex("by_email_and_date")
+      .filter((q) => q.eq(q.field("email"), email))
+      .filter((q) => q.eq(q.field("date"), args.date))
+      .order("desc")
+      .first();
+
+    return results;
+  },
+});
+
+export const getAllByEmail = query({
+  handler: async (ctx) => {
+    const email = await getUserEmail(ctx);
+    if (!email) return null;
+
+    return await ctx.db
+      .query("notepads")
+      .withIndex("by_email_and_date")
+      .filter((q) => q.eq(q.field("email"), email))
+      .order("desc")
+      .collect();
+  },
+});
+

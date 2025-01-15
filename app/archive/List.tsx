@@ -49,7 +49,7 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       {notepads.length === 0 && (
         <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
           <p className="tiny text-gray-500">no notepads</p>
@@ -72,12 +72,7 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
             onClick={() => swipeState.x === 0 && onClick?.(_id)}
           >
             <p className="medium flex-1">{title}</p>
-            <p className="small text-right text-gray-500 pr-2">
-              {new Date(date).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}
-            </p>
+            <p className="small text-right text-gray-500 pr-2">{date}</p>
           </div>
           {swipeState.id === _id && swipeState.x > 0 && (
             <div
@@ -100,6 +95,6 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
           )}
         </div>
       ))}
-    </>
+    </div>
   );
 }

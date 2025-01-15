@@ -8,6 +8,8 @@ export default defineSchema({
     title: v.string(),
     content: v.string(),
     date: v.string(),
-    email: v.optional(v.string()),
-  }).index("by_user", ["email"])
+    email: v.string(),
+  })
+    .index("by_date", ["date"])
+    .index("by_email_and_date", ["email", "date"]),
 });

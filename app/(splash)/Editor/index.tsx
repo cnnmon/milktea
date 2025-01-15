@@ -9,12 +9,10 @@ import { Body } from "./Body";
 
 export default function Editor({
   notepad,
-  isNew = false,
 }: {
-  notepad?: Doc<"notepads">;
-  isNew?: boolean;
+  notepad: Doc<"notepads"> | null | undefined;
 }) {
-  const createNotepad = useMutation(api.notepads.create);
+  const createNotepad = useMutation(api.notepads.createNotepad);
   const updateTitle = useMutation(api.notepads.updateTitle);
   const updateContent = useMutation(api.notepads.updateContent);
   const deleteNotepad = useMutation(api.notepads.deleteNotepad);
@@ -98,23 +96,21 @@ export default function Editor({
           if (saveTimeoutRef.current) {
             clearTimeout(saveTimeoutRef.current);
           }
-          window.location.href = "/";
+          window.location.href = "/archive";
         }}
         onDelete={() => {
           if (saveTimeoutRef.current) {
             clearTimeout(saveTimeoutRef.current);
           }
-          console.log("deleting notepad", id);
           if (id) {
             deleteNotepad({ notepadId: id as Id<"notepads"> });
           }
-          window.location.href = "/";
+          window.location.href = "/archive";
         }}
         isSaving={isSaving}
       />
       <Body
         notepad={notepad}
-        isNew={isNew}
         setIsSaving={setIsSaving}
         handleTitleUpdate={handleTitleUpdate}
         handleContentUpdate={handleContentUpdate}

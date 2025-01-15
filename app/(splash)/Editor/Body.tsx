@@ -5,13 +5,11 @@ import { useRef } from "react";
 
 export function Body({
   notepad,
-  isNew,
   setIsSaving,
   handleTitleUpdate,
   handleContentUpdate,
 }: {
-  notepad?: Doc<"notepads">;
-  isNew: boolean;
+  notepad: Doc<"notepads"> | null | undefined;
   setIsSaving: (isSaving: boolean) => void;
   handleTitleUpdate: (value: string) => Promise<void>;
   handleContentUpdate: (value: string) => Promise<void>;
@@ -21,7 +19,7 @@ export function Body({
     .toISOString()
     .split("T")[0];
 
-  if (!notepad && !isNew) {
+  if (notepad === undefined) {
     return (
       <div className="flex flex-col gap-4 pb-10">
         <div className="pt-[50%]">
@@ -40,7 +38,7 @@ export function Body({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="pt-[50%] w-full">
+      <div className="pt-[40%] w-full">
         <EditorInput
           value={notepad?.title || ""}
           placeholder="untitled"
@@ -48,9 +46,8 @@ export function Body({
           updateValue={handleTitleUpdate}
           setIsSaving={setIsSaving}
         />
-
         <div className="flex justify-between gap-2 items-center">
-          <p className="text-gray-500 mt-[-5px]">{displayDate}</p>
+          <p className="text-gray-500">{displayDate}</p>
         </div>
       </div>
       <EditorInput
