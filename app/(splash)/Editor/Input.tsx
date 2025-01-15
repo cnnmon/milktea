@@ -19,11 +19,9 @@ const useAutoResizeTextarea = (
   const updateTextareaHeight = React.useCallback(() => {
     const ref = textAreaRef?.current;
     if (ref) {
-      const scrollY = window.scrollY;
       ref.style.height = "auto";
       ref.style.height = `${ref.scrollHeight}px`;
       ref.style.overflow = "hidden";
-      window.scrollTo(0, scrollY);
     }
   }, []);
 
@@ -79,7 +77,7 @@ export default function EditorInput({
   placeholder,
   setIsSaving,
   autoSize = true,
-  debounceTime = 1000,
+  debounceTime = 2000,
 }: {
   value: string;
   ref?: React.RefObject<HTMLTextAreaElement>;

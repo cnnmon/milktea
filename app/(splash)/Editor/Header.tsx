@@ -21,9 +21,7 @@ export function EditorHeader({
       }
       right={
         <div className="flex items-center gap-2 h-10">
-          {isSaving && (
-            <span className="text-gray-500 font-secondary tiny">saving...</span>
-          )}
+          {isSaving && <span className="text-gray-500  tiny">saving...</span>}
           <Button onClick={onDelete}>
             <TrashIcon className="w-6 h-6" />
           </Button>

@@ -55,7 +55,7 @@ export function Body({
         ref={contentRef as React.RefObject<HTMLTextAreaElement>}
         value={notepad?.content || ""}
         placeholder="write something..."
-        className="pb-[100%] leading-5 h-auto"
+        className="body pb-[100%] leading-5 h-auto"
         updateValue={handleContentUpdate}
         setIsSaving={setIsSaving}
       />
