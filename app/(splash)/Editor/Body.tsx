@@ -52,7 +52,7 @@ export function Body({
         <TextareaAutosize
           value={localTitle}
           placeholder="untitled"
-          className="big font-secondary bg-transparent outline-none resize-none"
+          className="big font-secondary bg-transparent outline-none resize-none w-full"
           onChange={(e) => {
             setIsSaving(true);
             setLocalTitle(e.target.value);
