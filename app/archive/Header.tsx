@@ -1,0 +1,61 @@
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRightIcon,
+  Cross1Icon,
+  CrumpledPaperIcon,
+} from "@radix-ui/react-icons";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
+import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { Header } from "@/components/Header";
+
+export default function ArchiveHeader() {
+  const router = useRouter();
+  const { signOut } = useClerk();
+  const createNotepad = useMutation(api.notepads.createNotepad);
+
+  const handleCreateQuickNote = async () => {
+    const newNotepadId = await createNotepad({
+      title: "Quick Note",
+      content: "",
+    });
+    if (newNotepadId) {
+      router.push(`/${newNotepadId}`);
+    }
+  };
+
+  return (
+    <Header
+      left={
+        <Button
+          className="flex gap-2 font-primary tiny"
+          onClick={() =>
+            signOut().then(() => {
+              router.push("/sign-in");
+            })
+          }
+        >
+          <Cross1Icon className="w-6 h-6" />
+        </Button>
+      }
+      right={
+        <div className="flex gap-4 items-end">
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCreateQuickNote();
+              }}
+            >
+              <CrumpledPaperIcon className="w-6 h-6" />
+            </Button>
+          </div>
+          <Button className="flex gap-2" onClick={() => router.push("/")}>
+            <ArrowRightIcon className="w-6 h-6" />
+          </Button>
+        </div>
+      }
+    />
+  );
+}
