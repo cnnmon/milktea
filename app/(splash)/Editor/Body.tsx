@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Doc } from "@/convex/_generated/dataModel";
-import EditorInput from "./Input";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 export function Body({
   notepad,
@@ -14,6 +14,16 @@ export function Body({
   handleTitleUpdate: (value: string) => Promise<void>;
   handleContentUpdate: (value: string) => Promise<void>;
 }) {
+  const [localTitle, setLocalTitle] = useState("");
+  const [localContent, setLocalContent] = useState("");
+
+  useEffect(() => {
+    if (notepad && localTitle === "" && localContent === "") {
+      setLocalTitle(notepad.title || "");
+      setLocalContent(notepad.content || "");
+    }
+  }, [notepad, localTitle, localContent]);
+
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const displayDate = new Date(notepad?.date || Date.now())
     .toISOString()
@@ -39,25 +49,36 @@ export function Body({
   return (
     <div className="flex flex-col gap-4">
       <div className="pt-[40%] w-full">
-        <EditorInput
-          value={notepad?.title || ""}
+        <TextareaAutosize
+          value={localTitle}
           placeholder="untitled"
-          className="big font-secondary"
-          updateValue={handleTitleUpdate}
-          setIsSaving={setIsSaving}
-          autoSize={false}
+          className="big font-secondary bg-transparent outline-none resize-none"
+          onChange={(e) => {
+            setIsSaving(true);
+            setLocalTitle(e.target.value);
+            handleTitleUpdate(e.target.value);
+          }}
         />
         <div className="flex justify-between gap-2 items-center">
-          <p className="text-gray-500">{displayDate}</p>
+          <p className="text-gray-500">
+            {new Date(displayDate).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
         </div>
       </div>
-      <EditorInput
+      <TextareaAutosize
         ref={contentRef as React.RefObject<HTMLTextAreaElement>}
-        value={notepad?.content || ""}
+        value={localContent}
         placeholder="write something..."
-        className="body pb-[100%] leading-5 h-auto"
-        updateValue={handleContentUpdate}
-        setIsSaving={setIsSaving}
+        className="body pb-[100%] leading-5 h-auto resize-none bg-transparent outline-none"
+        onChange={(e) => {
+          setIsSaving(true);
+          setLocalContent(e.target.value);
+          handleContentUpdate(e.target.value);
+        }}
       />
     </div>
   );

@@ -48,7 +48,7 @@ export default function NotepadPage() {
           </Button>
         }
       />
-      <div className="flex flex-col gap-10 pt-[40%] sm:pt-[20%] pb-10">
+      <div className="flex flex-col gap-10 pt-[50%] sm:pt-[40%] pb-10">
         <div>
           <List onClick={(id) => router.push(`/${id}`)} />
         </div>
