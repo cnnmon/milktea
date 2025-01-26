@@ -17,6 +17,7 @@ function gracefulRedirect() {
 }
 
 export const get = query({
+  args: {},
   handler: async (ctx) => {
     const email = await getUserEmail(ctx);
     if (!email) {
@@ -24,8 +25,7 @@ export const get = query({
     }
     return await ctx.db
       .query("notepads")
-      .withIndex("by_date")
-      .filter((q) => q.eq(q.field("email"), email))
+      .withIndex("by_email_and_date", (q) => q.eq("email", email))
       .order("desc")
       .collect();
   },
@@ -51,7 +51,7 @@ export const getById = query({
 
 export const updateTitle = mutation({
   args: { notepadId: v.id("notepads"), title: v.string() },
-    handler: async (ctx, args) => {
+  handler: async (ctx, args) => {
     const email = await getUserEmail(ctx);
     if (!email) {
       return null;
@@ -99,15 +99,12 @@ export const getByDate = query({
     const email = await getUserEmail(ctx);
     if (!email) return null;
 
-    const results = await ctx.db
+    return await ctx.db
       .query("notepads")
-      .withIndex("by_email_and_date")
-      .filter((q) => q.eq(q.field("email"), email))
-      .filter((q) => q.eq(q.field("date"), args.date))
-      .order("desc")
+      .withIndex("by_email_and_date", (q) => 
+        q.eq("email", email).eq("date", args.date)
+      )
       .first();
-
-    return results;
   },
 });
 
