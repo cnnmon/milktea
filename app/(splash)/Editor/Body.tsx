@@ -62,6 +62,7 @@ export function Body({
         <div className="flex justify-between gap-2 items-center">
           <p className="text-gray-500">
             {new Date(displayDate).toLocaleDateString("en-US", {
+              timeZone: "UTC",
               month: "short",
               day: "numeric",
               year: "numeric",

@@ -74,9 +74,9 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
             <p className="medium flex-1">{title}</p>
             <p className="small text-right text-gray-500 pr-2">
               {new Date(date).toLocaleDateString("en-US", {
+                timeZone: "UTC",
                 month: "short",
                 day: "numeric",
-                timeZone: "UTC",
               })}
             </p>
           </div>

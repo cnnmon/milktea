@@ -16,6 +16,11 @@ import { useRouter } from "next/navigation";
 export default function NotepadPage() {
   const router = useRouter();
   const { signOut } = useClerk();
+  const today = new Date().toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+
   return (
     <>
       <Header
@@ -36,16 +41,19 @@ export default function NotepadPage() {
                     })
                   }
                 >
-                  sign out *･゜ﾟ
+                  sign out
                 </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         }
         right={
-          <Button onClick={() => router.push("/")}>
-            <ArrowRightIcon />
-          </Button>
+          <div className="flex items-center gap-2 justify-center">
+            <span className="text-sm text-gray-500 mb-[-5px]">{today}</span>
+            <Button onClick={() => router.push("/")}>
+              <ArrowRightIcon />
+            </Button>
+          </div>
         }
       />
       <div className="flex flex-col gap-10 pt-[50%] sm:pt-[40%] pb-10">
