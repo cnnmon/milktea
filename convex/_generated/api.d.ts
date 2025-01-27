@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as http from "../http.js";
 import type * as notepads from "../notepads.js";
+import type * as utils from "../utils.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -27,6 +28,7 @@ import type * as notepads from "../notepads.js";
 declare const fullApi: ApiFromModules<{
   http: typeof http;
   notepads: typeof notepads;
+  utils: typeof utils;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

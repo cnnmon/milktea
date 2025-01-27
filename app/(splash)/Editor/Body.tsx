@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Doc } from "@/convex/_generated/dataModel";
+import { displayDate } from "@/convex/utils";
 import { useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
@@ -11,8 +12,8 @@ export function Body({
 }: {
   notepad: Doc<"notepads"> | null | undefined;
   setIsSaving: (isSaving: boolean) => void;
-  handleTitleUpdate: (value: string) => Promise<void>;
-  handleContentUpdate: (value: string) => Promise<void>;
+  handleTitleUpdate: (value: string) => void;
+  handleContentUpdate: (value: string) => void;
 }) {
   const [localTitle, setLocalTitle] = useState("");
   const [localContent, setLocalContent] = useState("");
@@ -25,14 +26,11 @@ export function Body({
   }, [notepad, localTitle, localContent]);
 
   const contentRef = useRef<HTMLTextAreaElement>(null);
-  const displayDate = new Date(notepad?.date || Date.now())
-    .toISOString()
-    .split("T")[0];
 
   if (notepad === undefined) {
     return (
-      <div className="flex flex-col gap-4 pb-10">
-        <div className="pt-[50%]">
+      <>
+        <div className="pt-[40%]">
           <Skeleton className="h-10 w-[200px] mb-2" />
           <Skeleton className="h-4 w-[100px]" />
         </div>
@@ -42,13 +40,13 @@ export function Body({
           <Skeleton className="h-4 w-[85%]" />
           <Skeleton className="h-4 w-[80%]" />
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="pt-[40%] w-full">
+    <>
+      <div className="pt-[40%]">
         <TextareaAutosize
           value={localTitle}
           placeholder="untitled"
@@ -60,14 +58,7 @@ export function Body({
           }}
         />
         <div className="flex justify-between gap-2 items-center">
-          <p className="text-gray-500">
-            {new Date(displayDate).toLocaleDateString("en-US", {
-              timeZone: "UTC",
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </p>
+          <p className="text-gray-500">{displayDate(notepad?.date)}</p>
         </div>
       </div>
       <TextareaAutosize
@@ -81,6 +72,6 @@ export function Body({
           handleContentUpdate(e.target.value);
         }}
       />
-    </div>
+    </>
   );
 }

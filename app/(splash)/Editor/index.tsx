@@ -6,6 +6,7 @@ import React, { useCallback, useState, useRef, useEffect } from "react";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { EditorHeader } from "./Header";
 import { Body } from "./Body";
+import { getDate } from "@/convex/utils";
 
 export default function Editor({
   notepad,
@@ -28,66 +29,52 @@ export default function Editor({
   }, [notepad]);
 
   const handleTitleUpdate = useCallback(
-    async (newTitle: string) => {
-      setIsSaving(true);
-      try {
-        if (!id) {
-          await createNotepad({
-            title: newTitle,
-            content: "",
-          });
-          return;
-        }
-        await updateTitle({
-          notepadId: id as Id<"notepads">,
-          title: newTitle,
-        });
-      } finally {
-        if (saveTimeoutRef.current) {
-          clearTimeout(saveTimeoutRef.current);
-        }
-        saveTimeoutRef.current = setTimeout(() => {
-          setIsSaving(false);
-        }, 1000);
+    (value: string) => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
       }
+      setIsSaving(true);
+
+      saveTimeoutRef.current = setTimeout(async () => {
+        if (!id) {
+          const result = await createNotepad({
+            title: value,
+            content: "",
+            date: getDate(),
+          });
+          setId(result);
+        } else {
+          await updateTitle({ notepadId: id, title: value });
+        }
+        setIsSaving(false);
+      }, 1000);
     },
-    [id, updateTitle, createNotepad],
+    [id, createNotepad, updateTitle],
   );
 
   const handleContentUpdate = useCallback(
-    async (newContent: string) => {
-      setIsSaving(true);
-      try {
-        if (!id) {
-          const createdId = await createNotepad({
-            title: "Untitled",
-            content: newContent,
-          });
-          setId(createdId);
-          return;
-        }
-        await updateContent({
-          notepadId: id as Id<"notepads">,
-          content: newContent,
-        });
-      } finally {
-        if (saveTimeoutRef.current) {
-          clearTimeout(saveTimeoutRef.current);
-        }
-        saveTimeoutRef.current = setTimeout(() => {
-          setIsSaving(false);
-        }, 1000);
+    (value: string) => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
       }
-    },
-    [id, updateContent, createNotepad],
-  );
+      setIsSaving(true);
 
-  useEffect(() => {
-    if (notepad) {
-      setId(notepad._id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      saveTimeoutRef.current = setTimeout(async () => {
+        if (!id) {
+          const result = await createNotepad({
+            title: "",
+            content: value,
+            date: getDate(),
+          });
+          setId(result);
+        } else {
+          await updateContent({ notepadId: id, content: value });
+        }
+        setIsSaving(false);
+      }, 1000);
+    },
+    [id, createNotepad, updateContent],
+  );
 
   return (
     <>
@@ -103,18 +90,20 @@ export default function Editor({
             clearTimeout(saveTimeoutRef.current);
           }
           if (id) {
-            deleteNotepad({ notepadId: id as Id<"notepads"> });
+            deleteNotepad({ notepadId: id });
           }
           window.location.href = "/archive";
         }}
         isSaving={isSaving}
       />
-      <Body
-        notepad={notepad}
-        setIsSaving={setIsSaving}
-        handleTitleUpdate={handleTitleUpdate}
-        handleContentUpdate={handleContentUpdate}
-      />
+      <div className="flex flex-col gap-4">
+        <Body
+          notepad={notepad}
+          setIsSaving={setIsSaving}
+          handleTitleUpdate={handleTitleUpdate}
+          handleContentUpdate={handleContentUpdate}
+        />
+      </div>
     </>
   );
 }

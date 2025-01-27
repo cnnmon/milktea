@@ -23,11 +23,31 @@ export const get = query({
     if (!email) {
       return gracefulRedirect();
     }
-    return await ctx.db
+
+    // query directly with sorting by date desc and email
+    const notes = await ctx.db
       .query("notepads")
       .withIndex("by_email_and_date", (q) => q.eq("email", email))
       .order("desc")
       .collect();
+
+    // sort tagged vs untagged notes while maintaining date order
+    const sortedNotes = notes.reduce((acc, note) => {
+      const dateGroup = acc.find(group => group[0]?.date === note.date);
+      if (dateGroup) {
+        if (!note.tags) {
+          dateGroup.unshift(note); 
+        } else {
+          dateGroup.push(note); 
+        }
+      } else {
+        acc.push(note.tags ? [note] : [note]);
+      }
+      return acc;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }, [] as any[][]).flat();
+
+    return sortedNotes;
   },
 });
 
@@ -72,7 +92,7 @@ export const updateContent = mutation({
 });
 
 export const createNotepad = mutation({
-  args: { title: v.string(), content: v.string() },
+  args: { title: v.string(), content: v.string(), tags: v.optional(v.array(v.string())), date: v.string() },
   handler: async (ctx, args) => {
     const email = await getUserEmail(ctx);
     if (!email) {
@@ -80,7 +100,7 @@ export const createNotepad = mutation({
     }
     return await ctx.db.insert("notepads", {
       ...args,
-      date: new Date().toISOString().split("T")[0],
+      date: args.date,
       email: email,
     });
   },
@@ -98,12 +118,10 @@ export const getByDate = query({
   handler: async (ctx, args) => {
     const email = await getUserEmail(ctx);
     if (!email) return null;
-
     return await ctx.db
       .query("notepads")
-      .withIndex("by_email_and_date", (q) => 
-        q.eq("email", email).eq("date", args.date)
-      )
+      .withIndex("by_email_and_date")
+      .filter((q) => q.and(q.eq(q.field("email"), email), q.eq(q.field("date"), args.date), q.eq(q.field("tags"), undefined)))
       .first();
   },
 });
@@ -112,7 +130,6 @@ export const getAllByEmail = query({
   handler: async (ctx) => {
     const email = await getUserEmail(ctx);
     if (!email) return null;
-
     return await ctx.db
       .query("notepads")
       .withIndex("by_email_and_date")
@@ -121,4 +138,3 @@ export const getAllByEmail = query({
       .collect();
   },
 });
-

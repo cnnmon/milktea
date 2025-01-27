@@ -2,14 +2,12 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { useQuery, useMutation } from "convex/react";
+import { displayDate } from "@/convex/utils";
+import { useQuery } from "convex/react";
 import { useState, useRef } from "react";
-import { TrashIcon } from "@radix-ui/react-icons";
 
 export function List({ onClick }: { onClick?: (id: string) => void }) {
   const notepads = useQuery(api.notepads.get);
-  const deleteNotepad = useMutation(api.notepads.deleteNotepad);
   const [swipeState, setSwipeState] = useState<{ id: string; x: number }>({
     id: "",
     x: 0,
@@ -30,11 +28,6 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
     setSwipeState((prev) => ({ ...prev, x: prev.x > 40 ? 80 : 0 }));
   };
 
-  const handleDelete = (id: string) => {
-    deleteNotepad({ notepadId: id as Id<"notepads"> });
-    setSwipeState({ id: "", x: 0 });
-  };
-
   if (!notepads) {
     return (
       <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
@@ -52,10 +45,10 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
     <div className="flex flex-col gap-2">
       {notepads.length === 0 && (
         <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
-          <p className="tiny text-gray-500">no notepads yet...</p>
+          <p className="tiny text-gray-500 text-xs">no notepads yet...</p>
         </div>
       )}
-      {notepads.map(({ _id, title, date }) => (
+      {notepads.map(({ _id, title, date, tags }) => (
         <div key={_id} className="relative">
           <div
             onTouchStart={(e) => handleTouchStart(e, _id)}
@@ -72,33 +65,20 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
             onClick={() => swipeState.x === 0 && onClick?.(_id)}
           >
             <p className="medium flex-1">{title}</p>
+            <div className="flex gap-2">
+              {tags?.map((tag: string, index: number) => (
+                <p
+                  key={`${tag}-${index}`}
+                  className="tiny text-gray-500 bg-gray-200 px-1"
+                >
+                  {tag}
+                </p>
+              ))}
+            </div>
             <p className="small text-right text-gray-500 pr-2">
-              {new Date(date).toLocaleDateString("en-US", {
-                timeZone: "UTC",
-                month: "short",
-                day: "numeric",
-              })}
+              {displayDate(date)}
             </p>
           </div>
-          {swipeState.id === _id && swipeState.x > 0 && (
-            <div
-              className="absolute right-0 top-0 h-full flex items-center justify-center bg-gray-500 text-white"
-              style={{
-                width: "80px",
-                opacity: swipeState.x / 80,
-                transition: "opacity 0.2s ease",
-              }}
-              onClick={() => handleDelete(_id)}
-            >
-              <TrashIcon
-                className="w-4 h-4"
-                style={{
-                  transform: `scale(${0.5 + (swipeState.x / 80) * 0.5})`,
-                  transition: "transform 0.2s ease",
-                }}
-              />
-            </div>
-          )}
         </div>
       ))}
     </div>

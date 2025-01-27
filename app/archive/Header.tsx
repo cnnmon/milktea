@@ -9,6 +9,7 @@ import { useMutation } from "convex/react";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
+import { getDate } from "@/convex/utils";
 
 export default function ArchiveHeader() {
   const router = useRouter();
@@ -17,8 +18,10 @@ export default function ArchiveHeader() {
 
   const handleCreateQuickNote = async () => {
     const newNotepadId = await createNotepad({
-      title: "Quick Note",
+      title: "quick note",
       content: "",
+      tags: ["quick"],
+      date: getDate(),
     });
     if (newNotepadId) {
       router.push(`/${newNotepadId}`);
@@ -29,7 +32,6 @@ export default function ArchiveHeader() {
     <Header
       left={
         <Button
-          className="flex gap-2 font-primary tiny"
           onClick={() =>
             signOut().then(() => {
               router.push("/sign-in");
