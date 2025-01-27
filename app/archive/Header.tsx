@@ -16,11 +16,11 @@ export default function ArchiveHeader() {
   const { signOut } = useClerk();
   const createNotepad = useMutation(api.notepads.createNotepad);
 
-  const handleCreateQuickNote = async () => {
+  const handleCreateScrapNote = async () => {
     const newNotepadId = await createNotepad({
-      title: "quick note",
+      title: "scrap note",
       content: "",
-      tags: ["quick"],
+      tags: ["scrap"],
       date: getDate(),
     });
     if (newNotepadId) {
@@ -48,7 +48,7 @@ export default function ArchiveHeader() {
             <Button
               onClick={(e) => {
                 e.stopPropagation();
-                handleCreateQuickNote();
+                handleCreateScrapNote();
               }}
               className="hover-lift"
             >
