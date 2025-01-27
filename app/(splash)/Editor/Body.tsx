@@ -45,6 +45,7 @@ export function Body({
       <TextareaAutosize
         value={localTitle}
         placeholder="untitled"
+        spellCheck={false}
         className="big font-secondary bg-transparent outline-none resize-none w-full smooth-transition hover:opacity-90"
         onChange={(e) => {
           setIsSaving(true);
@@ -60,6 +61,7 @@ export function Body({
         ref={contentRef as React.RefObject<HTMLTextAreaElement>}
         value={localContent}
         placeholder="write something..."
+        spellCheck={false}
         className="body pb-[100%] leading-5 h-auto resize-none bg-transparent outline-none smooth-transition hover:opacity-90 w-full"
         onChange={(e) => {
           setIsSaving(true);
