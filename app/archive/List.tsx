@@ -42,7 +42,7 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 animate-in fade-in duration-500">
       {notepads.length === 0 && (
         <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
           <p className="tiny text-gray-500 text-xs">no notepads yet...</p>

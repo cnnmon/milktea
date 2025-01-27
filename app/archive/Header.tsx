@@ -37,8 +37,9 @@ export default function ArchiveHeader() {
               router.push("/sign-in");
             })
           }
+          className="hover-lift"
         >
-          <Cross1Icon className="w-6 h-6" />
+          <Cross1Icon className="w-5 h-5" />
         </Button>
       }
       right={
@@ -49,11 +50,15 @@ export default function ArchiveHeader() {
                 e.stopPropagation();
                 handleCreateQuickNote();
               }}
+              className="hover-lift"
             >
               <CrumpledPaperIcon className="w-6 h-6" />
             </Button>
           </div>
-          <Button className="flex gap-2" onClick={() => router.push("/")}>
+          <Button
+            className="flex gap-2 hover-lift"
+            onClick={() => router.push("/")}
+          >
             <ArrowRightIcon className="w-6 h-6" />
           </Button>
         </div>

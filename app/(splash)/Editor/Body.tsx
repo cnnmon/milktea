@@ -30,48 +30,43 @@ export function Body({
   if (notepad === undefined) {
     return (
       <>
-        <div className="pt-[40%]">
-          <Skeleton className="h-10 w-[200px] mb-2" />
-          <Skeleton className="h-4 w-[100px]" />
-        </div>
+        <Skeleton className="h-10 w-[200px] mb-2 animate-[pulse_2s_ease-in-out_infinite] opacity-40" />
+        <Skeleton className="h-2 w-[100px] animate-[pulse_2s_ease-in-out_infinite] opacity-40" />
+        <br />
         <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-[90%]" />
-          <Skeleton className="h-4 w-[85%]" />
-          <Skeleton className="h-4 w-[80%]" />
+          <Skeleton className="h-10 w-full animate-[pulse_2s_ease-in-out_infinite] opacity-40" />
         </div>
       </>
     );
   }
 
   return (
-    <>
-      <div className="pt-[40%]">
-        <TextareaAutosize
-          value={localTitle}
-          placeholder="untitled"
-          className="big font-secondary bg-transparent outline-none resize-none w-full"
-          onChange={(e) => {
-            setIsSaving(true);
-            setLocalTitle(e.target.value);
-            handleTitleUpdate(e.target.value);
-          }}
-        />
-        <div className="flex justify-between gap-2 items-center">
-          <p className="text-gray-500">{displayDate(notepad?.date)}</p>
-        </div>
-      </div>
+    <div className="animate-slide-up">
+      <TextareaAutosize
+        value={localTitle}
+        placeholder="untitled"
+        className="big font-secondary bg-transparent outline-none resize-none w-full smooth-transition hover:opacity-90"
+        onChange={(e) => {
+          setIsSaving(true);
+          setLocalTitle(e.target.value);
+          handleTitleUpdate(e.target.value);
+        }}
+      />
+      <p className="text-gray-500 mt-[-10px] animate-fade">
+        {displayDate(notepad?.date)}
+      </p>
+      <br />
       <TextareaAutosize
         ref={contentRef as React.RefObject<HTMLTextAreaElement>}
         value={localContent}
         placeholder="write something..."
-        className="body pb-[100%] leading-5 h-auto resize-none bg-transparent outline-none"
+        className="body pb-[100%] leading-5 h-auto resize-none bg-transparent outline-none smooth-transition hover:opacity-90 w-full"
         onChange={(e) => {
           setIsSaving(true);
           setLocalContent(e.target.value);
           handleContentUpdate(e.target.value);
         }}
       />
-    </>
+    </div>
   );
 }

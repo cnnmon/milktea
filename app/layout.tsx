@@ -36,6 +36,27 @@ export default function RootLayout({
       <ConvexClientProvider>
         <html lang="en" suppressHydrationWarning>
           <link rel="icon" href="/favicon.ico" sizes="any" />
+          <link
+            rel="preload"
+            href="/mondwest.otf"
+            as="font"
+            type="font/otf"
+            crossOrigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/neuebit.otf"
+            as="font"
+            type="font/otf"
+            crossOrigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/cygnito.otf"
+            as="font"
+            type="font/otf"
+            crossOrigin="anonymous"
+          />
           <body className="antialiased">{children}</body>
         </html>
       </ConvexClientProvider>
