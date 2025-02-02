@@ -7,13 +7,20 @@ export const metadata: Metadata = {
   title: "milktea",
   description: "journal",
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "milktea",
+    startupImage: "/favicon.svg",
   },
+  manifest: "/manifest.json",
+  themeColor: "#000000",
 };
 
 export const viewport = {
@@ -22,6 +29,11 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  meta: [
+    { name: "mobile-web-app-capable", content: "yes" },
+    { name: "apple-mobile-web-app-capable", content: "yes" },
+    { name: "apple-mobile-web-app-status-bar-style", content: "black" },
+  ],
 };
 
 export default function RootLayout({
