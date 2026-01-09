@@ -1,30 +1,16 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { GenericQueryCtx } from "convex/server";
-import { DataModel } from "./_generated/dataModel";
 
-async function getUserEmail(ctx: GenericQueryCtx<DataModel>) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) return null;
-  return identity.email;
-}
-
-function gracefulRedirect() {
-  if (typeof window !== "undefined") {
-    window.location.href = "/sign-in";
-  }
-  return;
+// Single-user app: email is set via environment variable
+function getUserEmail() {
+  return process.env.USER_EMAIL || "user@milktea.app";
 }
 
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    const email = await getUserEmail(ctx);
-    if (!email) {
-      return gracefulRedirect();
-    }
+    const email = getUserEmail();
 
-    // query directly with sorting by date desc and email
     const notes = await ctx.db
       .query("notepads")
       .withIndex("by_email_and_date", (q) => q.eq("email", email))
@@ -33,12 +19,12 @@ export const get = query({
 
     // sort tagged vs untagged notes while maintaining date order
     const sortedNotes = notes.reduce((acc, note) => {
-      const dateGroup = acc.find(group => group[0]?.date === note.date);
+      const dateGroup = acc.find((group) => group[0]?.date === note.date);
       if (dateGroup) {
         if (!note.tags) {
-          dateGroup.unshift(note); 
+          dateGroup.unshift(note);
         } else {
-          dateGroup.push(note); 
+          dateGroup.push(note);
         }
       } else {
         acc.push(note.tags ? [note] : [note]);
@@ -54,17 +40,10 @@ export const get = query({
 export const getById = query({
   args: { notepadId: v.id("notepads") },
   handler: async (ctx, args) => {
-    if (!args.notepadId) {
-      return gracefulRedirect();
-    }
-    const email = await getUserEmail(ctx);
-    if (!email) {
-      return gracefulRedirect();
-    }
+    if (!args.notepadId) return null;
+    const email = getUserEmail();
     const notepad = await ctx.db.get(args.notepadId);
-    if (notepad?.email !== email) {
-      return gracefulRedirect();
-    }
+    if (notepad?.email !== email) return null;
     return notepad;
   },
 });
@@ -72,10 +51,6 @@ export const getById = query({
 export const updateTitle = mutation({
   args: { notepadId: v.id("notepads"), title: v.string() },
   handler: async (ctx, args) => {
-    const email = await getUserEmail(ctx);
-    if (!email) {
-      return null;
-    }
     return await ctx.db.patch(args.notepadId, {
       title: args.title,
     });
@@ -92,12 +67,14 @@ export const updateContent = mutation({
 });
 
 export const createNotepad = mutation({
-  args: { title: v.string(), content: v.string(), tags: v.optional(v.array(v.string())), date: v.string() },
+  args: {
+    title: v.string(),
+    content: v.string(),
+    tags: v.optional(v.array(v.string())),
+    date: v.string(),
+  },
   handler: async (ctx, args) => {
-    const email = await getUserEmail(ctx);
-    if (!email) {
-      return null;
-    }
+    const email = getUserEmail();
     return await ctx.db.insert("notepads", {
       ...args,
       date: args.date,
@@ -116,20 +93,24 @@ export const deleteNotepad = mutation({
 export const getByDate = query({
   args: { date: v.string() },
   handler: async (ctx, args) => {
-    const email = await getUserEmail(ctx);
-    if (!email) return null;
+    const email = getUserEmail();
     return await ctx.db
       .query("notepads")
       .withIndex("by_email_and_date")
-      .filter((q) => q.and(q.eq(q.field("email"), email), q.eq(q.field("date"), args.date), q.eq(q.field("tags"), undefined)))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("email"), email),
+          q.eq(q.field("date"), args.date),
+          q.eq(q.field("tags"), undefined)
+        )
+      )
       .first();
   },
 });
 
 export const getAllByEmail = query({
   handler: async (ctx) => {
-    const email = await getUserEmail(ctx);
-    if (!email) return null;
+    const email = getUserEmail();
     return await ctx.db
       .query("notepads")
       .withIndex("by_email_and_date")

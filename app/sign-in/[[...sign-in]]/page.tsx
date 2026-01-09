@@ -1,24 +1,42 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SignInButton } from "@clerk/clerk-react";
+import { Input } from "@/components/ui/input";
 import { TransparencyGridIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+
+    if (res.ok) {
+      router.push("/");
+      router.refresh();
+    } else {
+      setError("Invalid password");
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center h-screen text-left">
-      <SignInButton
-        mode="modal"
-        fallbackRedirectUrl={"/"}
-        signUpForceRedirectUrl={"/"}
-      >
-        <Button
-          className="p-1 flex flex-col items-start"
-          style={{
-            fontFamily: "Arial",
-          }}
-        >
+      <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center">
           <div className="flex w-full justify-center">
             <TransparencyGridIcon className="w-6 h-6 mr-[-18px]" />
             <Image
@@ -29,10 +47,23 @@ export default function SignInPage() {
               className="z-10"
             />
           </div>
+        </div>
 
-          <p className="text-xs">[sign in why don&apos;t you] </p>
+        <Input
+          type="password"
+          placeholder="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-48 text-center"
+          autoFocus
+        />
+
+        {error && <p className="text-red-500 text-xs">{error}</p>}
+
+        <Button type="submit" disabled={loading} className="hover-lift">
+          {loading ? "..." : "sign in"}
         </Button>
-      </SignInButton>
+      </form>
     </div>
   );
 }
