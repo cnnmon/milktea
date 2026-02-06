@@ -1,22 +1,22 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { api } from "@/convex/_generated/api";
 import { displayDate } from "@/convex/utils";
-import { useQuery } from "convex/react";
+import { useRecentNotepads } from "@/hooks/useRecentNotepads";
 import { useState, useRef } from "react";
+import { Cloud, CloudOff } from "lucide-react";
 
-export function List({ onClick }: { onClick?: (id: string) => void }) {
-  const notepads = useQuery(api.notepads.get);
-  const [swipeState, setSwipeState] = useState<{ id: string; x: number }>({
-    id: "",
+export function List({ onClick }: { onClick?: (date: string) => void }) {
+  const { notepads, isLoading } = useRecentNotepads();
+  const [swipeState, setSwipeState] = useState<{ date: string; x: number }>({
+    date: "",
     x: 0,
   });
   const touchStart = useRef<number>(0);
 
-  const handleTouchStart = (e: React.TouchEvent, id: string) => {
+  const handleTouchStart = (e: React.TouchEvent, date: string) => {
     touchStart.current = e.touches[0].clientX;
-    setSwipeState({ id, x: 0 });
+    setSwipeState({ date, x: 0 });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -28,7 +28,7 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
     setSwipeState((prev) => ({ ...prev, x: prev.x > 40 ? 80 : 0 }));
   };
 
-  if (!notepads) {
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
         {[...Array(20)].map((_, i) => (
@@ -46,26 +46,29 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
       {notepads.length === 0 && (
         <div className="flex flex-col gap-1 overflow-y-scroll pb-10 justify-between">
           <p className="tiny text-gray-500 text-xs">no notepads yet...</p>
+          <p className="tiny text-gray-400 text-xs mt-2">
+            tap + to create one, or Sync to pull from cloud
+          </p>
         </div>
       )}
-      {notepads.map(({ _id, title, date, tags }) => (
-        <div key={_id} className="relative">
+      {notepads.map(({ date, title, syncStatus, tags }) => (
+        <div key={date} className="relative">
           <div
-            onTouchStart={(e) => handleTouchStart(e, _id)}
+            onTouchStart={(e) => handleTouchStart(e, date)}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             style={{
               transform:
-                swipeState.id === _id
+                swipeState.date === date
                   ? `translateX(-${swipeState.x}px)`
                   : "none",
               transition: "transform 0.2s ease",
             }}
             className="flex gap-2 justify-between items-center hover:bg-gray-300 cursor-pointer"
-            onClick={() => swipeState.x === 0 && onClick?.(_id)}
+            onClick={() => swipeState.x === 0 && onClick?.(date)}
           >
-            <p className="medium flex-1">{title}</p>
-            <div className="flex gap-2">
+            <p className="medium flex-1">{title || "(untitled)"}</p>
+            <div className="flex items-center gap-2">
               {tags?.map((tag: string, index: number) => (
                 <p
                   key={`${tag}-${index}`}
@@ -74,10 +77,15 @@ export function List({ onClick }: { onClick?: (id: string) => void }) {
                   {tag}
                 </p>
               ))}
+              {syncStatus === "synced" ? (
+                <Cloud className="w-3 h-3 text-green-500" />
+              ) : (
+                <CloudOff className="w-3 h-3 text-orange-400" />
+              )}
+              <p className="small text-right text-gray-500 pr-2">
+                {displayDate(date)}
+              </p>
             </div>
-            <p className="small text-right text-gray-500 pr-2">
-              {displayDate(date)}
-            </p>
           </div>
         </div>
       ))}

@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { SyncButton } from "@/components/SyncButton";
+import { DotsVerticalIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -35,6 +35,7 @@ export function EditorHeader({
           {isSaving && (
             <span className="text-gray-500 tiny animate-fade">saving...</span>
           )}
+          <SyncButton />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="hover-lift">

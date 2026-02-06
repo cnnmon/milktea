@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Middleware now only handles the legacy sign-in redirect
+// Main auth is handled client-side via LocalAuthGate
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isPublicRoute = pathname.startsWith("/sign-in") || pathname.startsWith("/api/auth");
-  const authSession = request.cookies.get("auth_session");
-
-  if (!isPublicRoute && !authSession) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
-  }
-
-  if (isPublicRoute && authSession && pathname.startsWith("/sign-in")) {
+  
+  // Redirect /sign-in to / (LocalAuthGate will show login if needed)
+  if (pathname.startsWith("/sign-in")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -18,7 +15,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|otf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     "/(api|trpc)(.*)",
   ],
 };

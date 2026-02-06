@@ -1,35 +1,22 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRightIcon,
-  Cross1Icon,
-  CrumpledPaperIcon,
-} from "@radix-ui/react-icons";
-import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
+import { ArrowRightIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
-import { getDate } from "@/convex/utils";
+import { SyncButton } from "@/components/SyncButton";
+import { useLocalAuth } from "@/hooks/useLocalAuth";
 
 export default function ArchiveHeader() {
   const router = useRouter();
-  const createNotepad = useMutation(api.notepads.createNotepad);
+  const { logout } = useLocalAuth();
 
-  const handleSignOut = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+  const handleSignOut = () => {
+    logout();
+    // Also clear server cookie if it exists
+    fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
     router.push("/sign-in");
     router.refresh();
-  };
-
-  const handleCreateScrapNote = async () => {
-    const newNotepadId = await createNotepad({
-      title: "scrap note",
-      content: "",
-      tags: ["scrap"],
-      date: getDate(),
-    });
-    if (newNotepadId) {
-      router.push(`/${newNotepadId}`);
-    }
   };
 
   return (
@@ -40,18 +27,8 @@ export default function ArchiveHeader() {
         </Button>
       }
       right={
-        <div className="flex gap-4 items-end">
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCreateScrapNote();
-              }}
-              className="hover-lift"
-            >
-              <CrumpledPaperIcon className="w-6 h-6" />
-            </Button>
-          </div>
+        <div className="flex gap-2 items-center">
+          <SyncButton />
           <Button
             className="flex gap-2 hover-lift"
             onClick={() => router.push("/")}

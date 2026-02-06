@@ -4,17 +4,20 @@
 
 @font-face {
   font-family: "neuebit";
-  src: url("/neuebit.otf");
+  src: url("/neuebit.otf") format("opentype");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "mondwest";
-  src: url("/mondwest.otf");
+  src: url("/mondwest.otf") format("opentype");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "cygnito";
-  src: url("/cygnito.otf");
+  src: url("/cygnito.otf") format("opentype");
+  font-display: swap;
 }
 
 @layer base {

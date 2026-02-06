@@ -58,12 +58,16 @@ export default function SignInPage() {
           autoFocus
         />
 
-        {error && <p className="text-red-500 text-xs">{error}</p>}
-
         <Button type="submit" disabled={loading} className="hover-lift">
-          {loading ? "..." : "sign in"}
+          {loading ? "..." : "sign in, why don't you"}
         </Button>
       </form>
+
+      {error && (
+        <div className="absolute bg-dark bottom-0 border-2 border-dark m-2 px-2">
+          <p className="text-white text-xs">{error}</p>
+        </div>
+      )}
     </div>
   );
 }

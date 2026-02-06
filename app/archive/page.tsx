@@ -12,7 +12,7 @@ export default function NotepadPage() {
       <ArchiveHeader />
       <div className="flex flex-col gap-10 pt-[50%] sm:pt-[40%] pb-10">
         <div>
-          <List onClick={(id) => router.push(`/${id}`)} />
+          <List onClick={(date) => router.push(`/${date}`)} />
         </div>
       </div>
     </>
