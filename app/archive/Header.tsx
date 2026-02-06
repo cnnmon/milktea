@@ -13,9 +13,6 @@ export default function ArchiveHeader() {
 
   const handleSignOut = () => {
     logout();
-    // Also clear server cookie if it exists
-    fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
-    router.push("/sign-in");
     router.refresh();
   };
 

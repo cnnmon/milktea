@@ -67,7 +67,7 @@ export function SyncButton() {
       case "error":
         return "Error";
       default:
-        return pendingCount > 0 ? `(${pendingCount})` : "";
+        return pendingCount > 0 && ` (${pendingCount})`;
     }
   };
 
@@ -75,7 +75,7 @@ export function SyncButton() {
     <Button
       onClick={handleSync}
       disabled={status === "syncing"}
-      className="hover-lift p-1"
+      className="hover-lift p-1 flex gap-1"
     >
       {getIcon()}
       <span>{getText()}</span>

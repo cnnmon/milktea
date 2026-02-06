@@ -4,8 +4,9 @@
   "description": "lactose full journal",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "orientation": "portrait",
+  "background_color": "#EFEFEF",
+  "theme_color": "#EFEFEF",
   "icons": [
     {
       "src": "/favicon.ico",

@@ -78,9 +78,9 @@ export function List({ onClick }: { onClick?: (date: string) => void }) {
                 </p>
               ))}
               {syncStatus === "synced" ? (
-                <Cloud className="w-3 h-3 text-green-500" />
+                <Cloud className="w-3 h-3 opacity-50" />
               ) : (
-                <CloudOff className="w-3 h-3 text-orange-400" />
+                <CloudOff className="w-3 h-3 opacity-50" />
               )}
               <p className="small text-right text-gray-500 pr-2">
                 {displayDate(date)}

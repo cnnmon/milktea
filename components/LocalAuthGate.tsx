@@ -38,8 +38,8 @@ export function LocalAuthGate({ children }: { children: ReactNode }) {
   // Not authenticated - show login
   if (!isAuthenticated) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen text-left">
-        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
+      <div className="flex flex-col justify-center items-center h-screen">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-2">
           <div className="flex flex-col items-center">
             <div className="flex w-full justify-center">
               <TransparencyGridIcon className="w-6 h-6 mr-[-18px]" />
@@ -53,18 +53,20 @@ export function LocalAuthGate({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          <Input
-            type="password"
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-48 text-center"
-            autoFocus
-          />
+          <div className="flex flex-col items-center">
+            <Input
+              type="password"
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-48 text-center"
+              autoFocus
+            />
 
-          <Button type="submit" disabled={submitting} className="hover-lift">
-            {submitting ? "..." : "sign in, why don't you"}
-          </Button>
+            <Button type="submit" disabled={submitting} className="hover-lift">
+              [{submitting ? "..." : "sign in, why don't you"}]
+            </Button>
+          </div>
         </form>
       </div>
     );

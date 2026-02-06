@@ -63,18 +63,3 @@ export function getUserEmail(): string {
   if (typeof window === "undefined") return ACCOUNT_EMAIL;
   return localStorage.getItem(AUTH_EMAIL_KEY) || ACCOUNT_EMAIL;
 }
-
-// Validate password against server (works online only)
-export async function validatePassword(password: string): Promise<boolean> {
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    return res.ok;
-  } catch {
-    // If fetch fails (offline or Capacitor), try Convex validation
-    return false;
-  }
-}
