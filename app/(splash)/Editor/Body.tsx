@@ -71,7 +71,7 @@ export function Body({
         value={localContent}
         placeholder="write something..."
         spellCheck={false}
-        className="body pb-[100%] leading-5 h-auto resize-none bg-transparent outline-none smooth-transition hover:opacity-90 w-full"
+        className="body pb-[100%] leading-5 h-auto resize-none bg-transparent outline-none smooth-transition hover:opacity-90 w-full scroll-mt-32"
         onChange={(e) => {
           setLocalContent(e.target.value);
           handleContentUpdate(e.target.value);

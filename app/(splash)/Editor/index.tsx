@@ -38,7 +38,7 @@ export default function Editor({ date }: { date?: string }) {
   return (
     <div className="flex flex-col h-screen">
       <EditorHeader isSaving={isSaving} onDelete={handleDelete} />
-      <div className="pt-[40%]">
+      <div className="pt-[30%] sm:pt-[40%] mt-16">
         <Body
           notepad={notepad}
           isLoading={isLoading}
