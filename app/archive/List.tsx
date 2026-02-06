@@ -3,7 +3,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { displayDate } from "@/convex/utils";
 import { useRecentNotepads } from "@/hooks/useRecentNotepads";
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { Cloud, CloudOff } from "lucide-react";
 
 export function List({ onClick }: { onClick?: (date: string) => void }) {
@@ -12,6 +12,8 @@ export function List({ onClick }: { onClick?: (date: string) => void }) {
     date: "",
     x: 0,
   });
+  const [loadingDate, setLoadingDate] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const touchStart = useRef<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent, date: string) => {
@@ -26,6 +28,15 @@ export function List({ onClick }: { onClick?: (date: string) => void }) {
 
   const handleTouchEnd = () => {
     setSwipeState((prev) => ({ ...prev, x: prev.x > 40 ? 80 : 0 }));
+  };
+
+  const handleClick = (date: string) => {
+    if (swipeState.x === 0 && onClick) {
+      setLoadingDate(date);
+      startTransition(() => {
+        onClick(date);
+      });
+    }
   };
 
   if (isLoading) {
@@ -64,10 +75,17 @@ export function List({ onClick }: { onClick?: (date: string) => void }) {
                   : "none",
               transition: "transform 0.2s ease",
             }}
-            className="flex gap-2 justify-between items-center hover:bg-gray-300 cursor-pointer"
-            onClick={() => swipeState.x === 0 && onClick?.(date)}
+            className={`flex gap-2 justify-between items-center hover:bg-gray-300 cursor-pointer ${
+              loadingDate === date && isPending ? "opacity-50" : ""
+            }`}
+            onClick={() => handleClick(date)}
           >
-            <p className="medium flex-1">{title || "(untitled)"}</p>
+            <div className="flex items-center gap-2">
+              {loadingDate === date && isPending && (
+                <div className="w-4 h-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+              )}
+              <p className="medium flex-1">{title || "(untitled)"}</p>
+            </div>
             <div className="flex items-center gap-2">
               {tags?.map((tag: string, index: number) => (
                 <p
@@ -78,9 +96,9 @@ export function List({ onClick }: { onClick?: (date: string) => void }) {
                 </p>
               ))}
               {syncStatus === "synced" ? (
-                <Cloud className="w-3 h-3 opacity-50" />
+                <Cloud className="w-3 h-3 text-green-500" />
               ) : (
-                <CloudOff className="w-3 h-3 opacity-50" />
+                <CloudOff className="w-3 h-3 text-orange-400" />
               )}
               <p className="small text-right text-gray-500 pr-2">
                 {displayDate(date)}

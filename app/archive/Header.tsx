@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { Header } from "@/components/Header";
 import { SyncButton } from "@/components/SyncButton";
 import { useLocalAuth } from "@/hooks/useLocalAuth";
@@ -10,10 +11,17 @@ import { useLocalAuth } from "@/hooks/useLocalAuth";
 export default function ArchiveHeader() {
   const router = useRouter();
   const { logout } = useLocalAuth();
+  const [isPending, startTransition] = useTransition();
 
   const handleSignOut = () => {
     logout();
     router.refresh();
+  };
+
+  const handleGoToToday = () => {
+    startTransition(() => {
+      router.push("/");
+    });
   };
 
   return (
@@ -28,9 +36,14 @@ export default function ArchiveHeader() {
           <SyncButton />
           <Button
             className="flex gap-2 hover-lift"
-            onClick={() => router.push("/")}
+            onClick={handleGoToToday}
+            disabled={isPending}
           >
-            <ArrowRightIcon className="w-6 h-6" />
+            {isPending ? (
+              <div className="w-6 h-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+            ) : (
+              <ArrowRightIcon className="w-6 h-6" />
+            )}
           </Button>
         </div>
       }

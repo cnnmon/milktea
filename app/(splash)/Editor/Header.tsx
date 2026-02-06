@@ -1,8 +1,11 @@
+"use client";
+
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { SyncButton } from "@/components/SyncButton";
 import { DotsVerticalIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,16 +21,27 @@ export function EditorHeader({
   onDelete: () => void;
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleExit = () => {
-    router.push("/archive");
+    startTransition(() => {
+      router.push("/archive");
+    });
   };
 
   return (
     <Header
       left={
-        <Button onClick={handleExit} className="hover-lift">
-          <ArrowLeftIcon className="w-6 h-6 smooth-transition hover:scale-110" />
+        <Button 
+          onClick={handleExit} 
+          className="hover-lift"
+          disabled={isPending}
+        >
+          {isPending ? (
+            <div className="w-6 h-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+          ) : (
+            <ArrowLeftIcon className="w-6 h-6 smooth-transition hover:scale-110" />
+          )}
         </Button>
       }
       right={
