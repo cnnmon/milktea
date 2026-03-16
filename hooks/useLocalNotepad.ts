@@ -76,9 +76,12 @@ export function useLocalNotepad(date?: string) {
     [notepad, saveToDb]
   );
 
-  // Delete notepad
+  // Delete notepad (tracks remoteId so sync can delete from Convex)
   const deleteNotepad = useCallback(async () => {
     if (!notepad) return;
+    if (notepad.remoteId) {
+      await db.deletedNotepads.put({ remoteId: notepad.remoteId });
+    }
     await db.notepads.delete(targetDate);
     setNotepad(null);
   }, [notepad, targetDate]);

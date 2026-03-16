@@ -14,7 +14,21 @@ export async function syncAll(convex: ConvexReactClient): Promise<SyncResult> {
   const result: SyncResult = { pushed: 0, pulled: 0, conflicts: 0, errors: [] };
 
   try {
-    // 1. Push pending local changes to Convex
+    // 1. Push deletions to Convex
+    const deletions = await db.deletedNotepads.toArray();
+    const deletedRemoteIds = new Set<string>();
+    for (const del of deletions) {
+      try {
+        await convex.mutation(api.notepads.deleteNotepad, {
+          notepadId: del.remoteId as Id<"notepads">,
+        });
+      } catch {}
+      deletedRemoteIds.add(del.remoteId);
+      await db.deletedNotepads.delete(del.remoteId);
+      result.pushed++;
+    }
+
+    // 2. Push pending local changes to Convex
     const pending = await db.notepads
       .where("syncStatus")
       .equals("pending")
@@ -50,12 +64,12 @@ export async function syncAll(convex: ConvexReactClient): Promise<SyncResult> {
       }
     }
 
-    // 2. Pull remote changes from Convex
+    // 3. Pull remote changes from Convex
     const remoteAll = await convex.query(api.notepads.getAllByEmail, {});
 
     for (const remote of remoteAll) {
-      // Skip tagged notepads for now (only sync main daily entries)
       if (remote.tags && remote.tags.length > 0) continue;
+      if (deletedRemoteIds.has(remote._id)) continue;
 
       const local = await db.notepads.get(remote.date);
 

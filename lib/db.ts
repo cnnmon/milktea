@@ -11,13 +11,22 @@ export interface LocalNotepad {
   syncStatus: "synced" | "pending" | "conflict";
 }
 
+export interface DeletedNotepad {
+  remoteId: string;
+}
+
 class MilkteaDB extends Dexie {
   notepads!: Table<LocalNotepad>;
+  deletedNotepads!: Table<DeletedNotepad>;
 
   constructor() {
     super("milktea");
     this.version(1).stores({
       notepads: "date, syncStatus, localUpdatedAt",
+    });
+    this.version(2).stores({
+      notepads: "date, syncStatus, localUpdatedAt",
+      deletedNotepads: "remoteId",
     });
   }
 }
@@ -30,14 +39,15 @@ export function getTodayDate(): string {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 
-// Delete empty notepads that aren't from today
-export async function cleanupEmptyNotepads() {
+// Delete empty notepads that aren't from today, returns deleted entries for remote cleanup
+export async function cleanupEmptyNotepads(): Promise<LocalNotepad[]> {
   const today = getTodayDate();
   const all = await db.notepads.toArray();
-  const emptyDates = all
-    .filter((n) => n.date !== today && !n.title.trim() && !n.content.trim())
-    .map((n) => n.date);
-  if (emptyDates.length > 0) {
-    await db.notepads.bulkDelete(emptyDates);
+  const empty = all.filter(
+    (n) => n.date !== today && !(n.title || "").trim() && !(n.content || "").trim()
+  );
+  if (empty.length > 0) {
+    await db.notepads.bulkDelete(empty.map((n) => n.date));
   }
+  return empty;
 }

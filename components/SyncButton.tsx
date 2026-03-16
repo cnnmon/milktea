@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useConvex } from "convex/react";
 import { syncAll, SyncResult } from "@/lib/sync";
 import { cleanupEmptyNotepads } from "@/lib/db";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { usePendingCount } from "@/hooks/useRecentNotepads";
 import { Cloud, CloudOff, Loader2, Check, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
@@ -25,8 +27,17 @@ export function SyncButton() {
 
     setStatus("syncing");
     try {
-      await cleanupEmptyNotepads();
       const r = await syncAll(convex);
+      const deleted = await cleanupEmptyNotepads();
+      for (const n of deleted) {
+        if (n.remoteId) {
+          try {
+            await convex.mutation(api.notepads.deleteNotepad, {
+              notepadId: n.remoteId as Id<"notepads">,
+            });
+          } catch {}
+        }
+      }
       setResult(r);
       if (r.errors.length > 0) {
         setStatus("error");
