@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useTransition } from "react";
 import Editor from "./Editor";
 import { useRecentNotepads } from "@/hooks/useRecentNotepads";
 import { useRouter } from "next/navigation";
 import { Search, X, Cloud, CloudOff } from "lucide-react";
 import { displayDate } from "@/convex/utils";
-import { cleanupEmptyNotepads } from "@/lib/db";
 
 export default function NewNotepadPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,10 +14,6 @@ export default function NewNotepadPage() {
   const [loadingDate, setLoadingDate] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const isSearching = searchQuery.length > 0;
-
-  useEffect(() => {
-    cleanupEmptyNotepads();
-  }, []);
 
   const filteredNotepads = isSearching
     ? notepads.filter(

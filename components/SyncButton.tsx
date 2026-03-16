@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useConvex } from "convex/react";
 import { syncAll, SyncResult } from "@/lib/sync";
+import { cleanupEmptyNotepads } from "@/lib/db";
 import { usePendingCount } from "@/hooks/useRecentNotepads";
 import { Cloud, CloudOff, Loader2, Check, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
@@ -24,6 +25,7 @@ export function SyncButton() {
 
     setStatus("syncing");
     try {
+      await cleanupEmptyNotepads();
       const r = await syncAll(convex);
       setResult(r);
       if (r.errors.length > 0) {
