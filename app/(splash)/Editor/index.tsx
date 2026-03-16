@@ -1,12 +1,20 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 import { EditorHeader } from "./Header";
 import { Body } from "./Body";
 import { useLocalNotepad } from "@/hooks/useLocalNotepad";
 import { useRouter } from "next/navigation";
 
-export default function Editor({ date }: { date?: string }) {
+export default function Editor({
+  date,
+  topContent,
+  hideBody,
+}: {
+  date?: string;
+  topContent?: ReactNode;
+  hideBody?: boolean;
+}) {
   const { notepad, isLoading, updateContent, updateTitle, deleteNotepad } =
     useLocalNotepad(date);
   const router = useRouter();
@@ -39,12 +47,15 @@ export default function Editor({ date }: { date?: string }) {
     <div className="flex flex-col h-screen">
       <EditorHeader isSaving={isSaving} onDelete={handleDelete} />
       <div className="pt-[30%] sm:pt-[40%] mt-16">
-        <Body
-          notepad={notepad}
-          isLoading={isLoading}
-          handleTitleUpdate={handleTitleUpdate}
-          handleContentUpdate={handleContentUpdate}
-        />
+        {topContent}
+        {!hideBody && (
+          <Body
+            notepad={notepad}
+            isLoading={isLoading}
+            handleTitleUpdate={handleTitleUpdate}
+            handleContentUpdate={handleContentUpdate}
+          />
+        )}
       </div>
     </div>
   );

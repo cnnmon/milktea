@@ -29,3 +29,15 @@ export function getTodayDate(): string {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
+
+// Delete empty notepads that aren't from today
+export async function cleanupEmptyNotepads() {
+  const today = getTodayDate();
+  const all = await db.notepads.toArray();
+  const emptyDates = all
+    .filter((n) => n.date !== today && !n.title.trim() && !n.content.trim())
+    .map((n) => n.date);
+  if (emptyDates.length > 0) {
+    await db.notepads.bulkDelete(emptyDates);
+  }
+}
